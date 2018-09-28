@@ -1,0 +1,17 @@
+./x64/*
+*.i.spr
+*.out.*
+*.out
+*.exe
+*.in
+*.pdb
+*.zip
+*.ipch
+*.db
+*.deps
+*.cache
+*.obj
+*.sln
+*.vcxproj.*
+*.vcxproj
+*.suo
