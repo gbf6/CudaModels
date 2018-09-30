@@ -16,6 +16,10 @@
 #include "fourVhostPrototypes.h"
 #include "fourVdevicePrototypes.cuh"
 
+void fourV_init(char** res) {
+
+}
+
 void fourV_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_dev, gateType* gate_devF) {
 
 	cudaHostAlloc((void**)&(gate_h->u), memSize, 0);

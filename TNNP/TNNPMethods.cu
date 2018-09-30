@@ -16,6 +16,116 @@
 #include "TNNPhostPrototypes.h"
 #include "TNNPdevicePrototypes.cuh"
 
+
+__device__ real TNNP_GNa = TNNP_GNa_0;
+__device__ real TNNP_GCaL = TNNP_GCaL_0;
+__device__ real TNNP_Gto = TNNP_Gto_0;
+__device__ real TNNP_Gkr = TNNP_Gkr_0;
+__device__ real TNNP_Gks = TNNP_Gks_0;
+__device__ real TNNP_GK1 = TNNP_GK1_0;
+__device__ real TNNP_GpCa = TNNP_GpCa_0;
+__device__ real TNNP_GpK = TNNP_GpK_0;
+__device__ real TNNP_GbNa = TNNP_GbNa_0;
+__device__ real TNNP_GbCa = TNNP_GbCa_0;
+real TNNP_RestVoltage = TNNP_RestVoltage_0;
+
+
+void TNNP_meminit(char** res) {
+	 rword resources[] = {
+	{ "TNNP_Gna",	1001 },
+	{ "TNNP_GCaL",	1002 },
+	{ "TNNP_Gto",	1003 },
+	{ "TNNP_Gkr",	1004 },
+	{ "TNNP_Gks",	1005 },
+	{ "TNNP_GK1",	1006 },
+	{ "TNNP_GpCa",	1007 },
+	{ "TNNP_GpK",	1008 },
+	{ "TNNP_GbNa",	1009 },
+	{ "TNNP_GbCa",	1010 },
+	{ "TNNP_IV",	1011 },
+	{ "TNNP_Node",	1100 },
+	{ "TNNP_Nodetype",1100 },
+	{ "TNNP_Patch",	1011 },
+	{ "TNNP_Type",	1100 },
+	{ "TNNP_Vr",	1012 },
+	{ "TNNP_Vrest",	1012 },
+	{ "TNNP_DT",	1013 },
+	{ NULL, 0 }
+	};
+
+	 int i, j, c;
+	 int cmd;
+	 real temp;
+
+	 i = 0;
+	 while (res[i] != NULL) {
+		 cmd = FindCommand(resources, res[i]);
+		 switch (cmd) {
+		 case 1001:
+			 temp = GetRealValue(res[i]);
+			 cudaMemcpyToSymbol(TNNP_GNa, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			 break;
+		 case 1002:
+			 temp = GetRealValue(res[i]);
+			 cudaMemcpyToSymbol(TNPP_GCaL, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			 break;
+		 case 1003:
+			 temp = GetRealValue(res[i]);
+			 cudaMemcpyToSymbol(TNNP_Gto, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			 break;
+		 case 1004:
+			 temp = GetRealValue(res[i]);
+			 cudaMemcpyToSymbol(TNNP_Gkr, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			 break;
+		 case 1005:
+			 temp = GetRealValue(res[i]);
+			 cudaMemcpyToSymbol(TNNP_Gks, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			 break;
+		 case 1006:
+			 temp = GetRealValue(res[i]);
+			 cudaMemcpyToSymbol(TNNP_GK1, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			 break;
+		 case 1007:
+			 temp = GetRealValue(res[i]);
+			 cudaMemcpyToSymbol(TNNP_GpCa, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			 break;
+		 case 1008:
+			 temp = GetRealValue(res[i]);
+			 cudaMemcpyToSymbol(TNNP_GpK, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			 break;
+		 case 1009:
+			 temp = GetRealValue(res[i]);
+			 cudaMemcpyToSymbol(TNNP_GbNa, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			 break;
+		 case 1010:
+			 temp = GetRealValue(res[i]);
+			 cudaMemcpyToSymbol(TNNP_GbCa, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			 break;
+		 case 1011:
+			 /*iv = GetRealArray(res[i]);
+			 p = (real*)(&TNNP_RestPatch);
+			 c = GetNumValues(res[i]);
+			 if (c > TNNP_PatchSize) {
+				 c = TNNP_PatchSize;
+			 }
+			 for (j = 0; j<c; j++) {
+				 p[j] = iv[j];
+			 }*/
+			 break;
+		 case 1012:
+			 TNNP_RestVoltage = GetRealValue(res[i]);
+			 break;
+		 case 1013:
+			// TNNP_DT = GetRealValue(res[i]);
+			 break;
+		 case 1100:
+			 //TNNP_NodeType = GetByteValue(res[i]);
+			 break;
+		 }
+		 i++;
+	 }
+}
+
 void TNNP_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_dev, gateType* gate_devF) {
 
 	cudaHostAlloc((void**)&(gate_h->vm), memSize, 0);

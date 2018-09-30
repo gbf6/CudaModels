@@ -12,7 +12,7 @@
  *========================================================================
  */
 
-#define  McCan_RestVoltage  -49.44
+#define  McCan_RestVoltage_0  -49.44
 #define  EK                 -87
 #define  gkv                 0.25
 #define  INaKbar             2.002
@@ -26,6 +26,6 @@
 #define  R                   8314.472
 #define  F                   96485.3415
 #define  T                   310.0
-#define  GbNa                0.0095
+#define  GbNa_0              0.0095
 #define  gK1                 0.4822
-#define  shiftrs             0
+#define  shiftrs_0           0

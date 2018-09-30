@@ -12,10 +12,105 @@
 #include "sparsePrototypes.cuh"
 #include "typedefCRN.h"
 
+#include "parseInput.cuh"
+
 #include "CRNhostPrototypes.h"
 #include "CRNdevicePrototypes.cuh"
 
-void __device__ stimSimple(real t, int i2d, gateType* g_dev, real* fv);
+
+real CRN_RestVoltage = CRN_RestVoltage_0;
+__device__ real gbca = gbca_0;
+__device__ real gbna = gbna_0;
+__device__ real gcal = gcal_0;
+__device__ real gk1 = gk1_0;
+__device__ real gkr = gkr_0;
+__device__ real gks = gks_0;
+__device__ real gna = gna_0;
+__device__ real gto = gto_0;
+
+
+void CRN_init(char** res) {
+
+	rword resources[] = {
+	{ "CRN_IV",	  1001 },
+	{ "CRN_Patch",	  1001 },
+	{ "CRN_Vr",	  1002 },
+	{ "CRN_Vrest",	  1002 },
+	{ "CRN_gbca",	  1003 },
+	{ "CRN_gbna",	  1004 },
+	{ "CRN_gcal",	  1005 },
+	{ "CRN_gk1",	  1006 },
+	{ "CRN_gkr",	  1007 },
+	{ "CRN_gks",	  1008 },
+	{ "CRN_gna",	  1009 },
+	{ "CRN_gto",	  1010 },
+	{ "CRN_nodetype", 1100 },
+	{ "CRN_node",	  1100 },
+	{ NULL, 0 }
+	};
+
+	int i, j, c;
+	int cmd;
+	real temp;
+
+	i = 0;
+	while (res[i] != NULL) {
+		cmd = FindCommand(resources, res[i]);
+		switch (cmd) {
+			case 1001:
+				/*iv = GetRealArray(res[i]);
+				p = (real*)(&CRN_RestPatch);
+				c = GetNumValues(res[i]);
+				if (c > CRN_PatchSize) {
+				c = CRN_PatchSize;
+				}
+				for (j = 0; j<c; j++) {
+				p[j] = iv[j];
+				}*/
+			break;
+			case 1002:
+				CRN_RestVoltage = GetRealValue(res[i]);
+				break;
+			case 1003:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(gbca, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1004:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(gbna, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1005:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(gcal, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1006:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(gk1, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1007:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(gkr, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1008:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(gks, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1009:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(gna, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1010:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(gto, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1100:
+				//CRN_NodeType = GetByteValue(res[i]);
+				break;
+			}
+		i++;
+	}
+}
+
 
 void CRN_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_dev, gateType* gate_devF) {
 
@@ -142,7 +237,7 @@ void CRN_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_d
 	int totpoints = (int)memSize / sizeof(real);
 
 	for (int idx = 0; idx < totpoints; idx++) {
-		gate_h->vm[idx]       = -81.2;
+		gate_h->vm[idx]       = CRN_RestVoltage;
 		gate_h->m[idx]        = 2.91e-3;
 		gate_h->h[idx]        = 0.965;
 		gate_h->j[idx]        = 0.978;

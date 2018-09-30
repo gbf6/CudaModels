@@ -11,11 +11,11 @@
  */
 
 
-#define  LRD_RestVoltage_0  -90 
+#define  LRDBacNav_RestVoltage_0  -90 
 
-#define  LRD_R               8314 
-#define  LRD_frdy            96485 
-#define  LRD_temp            310 
+#define  LRDBacNav_R               8314 
+#define  LRDBacNav_frdy            96485 
+#define  LRDBacNav_temp            310 
 
 #define  zk                  1 
 #define  zna                 1 
@@ -25,7 +25,7 @@
 #define  l                   0.01                /*  cm  */
 #define  pi                  3.141592   
 
-#define  LRD_cm_0            1  
+#define  LRDBacNav_cm_0            1  
 
 #define  nabm                140 
 #define  kbm                 4.5 
@@ -34,21 +34,22 @@
 #define  grelbarjsrol        4  
 
 /* current activators  (0-not used  1-used) */
-#define  LRD_ito_0           1 
-#define  LRD_ikna_0          0  
-#define  LRD_ikatp_0         0  
-#define  LRD_insna_0         0 
-#define  LRD_insk_0          0  
-#define  LRD_cleft_0         0 
+#define  LRDBacNav_ito_0           1 
+#define  LRDBacNav_ikna_0          0  
+#define  LRDBacNav_ikatp_0         0  
+#define  LRDBacNav_insna_0         0 
+#define  LRDBacNav_insk_0          0  
+#define  LRDBacNav_cleft_0         0 
 
 
-#define  LRD_Gna_0           16 
-#define  LRD_Gtca_0          0.05  
-#define  LRD_Gkp_0           0.00552 
-#define  LRD_Gkna            0.12848 
-#define  LRD_Gitodv_0        0.5 
-#define  LRD_Gcab_0          0.003016 
-#define  LRD_Gnab_0          0.004 
+#define  LRDBacNav_Gna_0           16 
+#define  BacNav_Gna_0			   16
+#define  LRDBacNav_Gtca_0          0.05  
+#define  LRDBacNav_Gkp_0           0.00552 
+#define  LRDBacNav_Gkna            0.12848 
+#define  LRDBacNav_Gitodv_0        0.5 
+#define  LRDBacNav_Gcab_0          0.003016 
+#define  LRDBacNav_Gnab_0          0.004 
 
 #define  nicholsarea         0.00005 
 #define  prnak               0.01833 

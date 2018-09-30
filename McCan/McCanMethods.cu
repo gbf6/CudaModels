@@ -13,8 +13,72 @@
 #include "sparsePrototypes.cuh"
 #include "typedefMcCan.h"
 
+#include "parseInput.h"
+
 #include "McCanhostPrototypes.h"
 #include "McCandevicePrototypes.cuh"
+
+__device__ real gkv = gkv_0;
+__device__ real shiftrs = shiftrs_0;
+__device__ real GbNa = GbNa_0;
+real McCan_RestVoltage = 
+
+void McCan_init(char** res) {
+
+	 rword resources[] = {
+	{ "McCan_Node",    1100 },
+	{ "McCan_Nodetype",1100 },
+	{ "McCan_Type",    1100 },
+	{ "McCan_patch",   1102 },
+	{ "McCan_Vr",	1007 },
+	{ "McCan_Vrest",	1007 },
+	{ "McCan_gkv",	1008 },
+	{ "McCan_shiftrs",	1009 },
+	{ "McCan_gbna",	1010 },
+	{ NULL, 0 }
+	};
+
+	int i, j, c;
+	int cmd;
+	real temp;
+
+	i = 0;
+	while (res[i] != NULL) {
+		cmd = FindCommand(resources, res[i]);
+		switch (cmd) {
+		case 1007:
+			McCan_RestVoltage = GetRealValue(res[i]);
+			break;
+		case 1008:
+			temp = GetRealValue(res[i]);
+			cudaMemcpyToSymbol(gkv, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			break;
+		case 1009:
+			temp = GetRealValue(res[i]);
+			cudaMemcpyToSymbol(shiftrs, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			break;
+		case 1010:
+			temp = GetRealValue(res[i]);
+			cudaMemcpyToSymbol(GbNa, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			break;
+		case 1100:
+			//McCan_NodeType = GetByteValue(res[i]);
+			break;
+		case 1102:
+			/*iv = GetRealArray(res[i]);
+			p = (real*)(&McCan_RestPatch);
+			c = GetNumValues(res[i]);
+			if (c > McCan_PatchSize) {
+				c = McCan_PatchSize;
+			}
+			for (j = 0; j<c; j++) {
+				p[j] = iv[j];
+			}*/
+			break;
+		}
+		i++;
+	}
+}
 
 void McCan_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_dev, gateType* gate_devF) {
 

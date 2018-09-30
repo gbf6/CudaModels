@@ -6,7 +6,7 @@
 
 typedef struct gateType {
 	real *vm;
-	real *r, *s
+	real *r, *s;
 	real **qp;
 	int qpl = 2;
 	} gateType;

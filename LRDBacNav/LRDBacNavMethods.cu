@@ -18,44 +18,46 @@
 #include "LRDhostPrototypes.h"
 #include "LRDdevicePrototypes.cuh"
 
-real LRD_RestVoltage = LRD_RestVoltage_0;
-__device__ real LRD_cm = LRD_cm_0;
-__device__ real LRD_Gna = LRD_Gna_0;
-__device__ real LRD_Gtca = LRD_Gtca_0;
-__device__ real LRD_Gkp = LRD_Gkp_0;
-__device__ real LRD_Gitodv = LRD_Gitodv_0;
-__device__ real LRD_Gcab = LRD_Gcab_0;
-__device__ real LRD_Gnab = LRD_Gnab_0;
-__device__ real LRD_ito = LRD_ito_0;
-__device__ real LRD_ikna = LRD_ikna_0;
-__device__ real LRD_ikatp = LRD_ikatp_0;
-__device__ real LRD_insna = LRD_insna_0;
-__device__ real LRD_insk = LRD_insk_0;
-__device__ real LRD_cleft = LRD_cleft_0;
+real LRDBacNav_RestVoltage = LRDBacNav_RestVoltage_0;
+__device__ real LRDBacNav_cm = LRD_cm_0;
+__device__ real LRDBacNav_Gna = LRD_Gna_0;
+__device__ real LRDBacNav_Gtca = LRD_Gtca_0;
+__device__ real LRDBacNav_Gkp = LRD_Gkp_0;
+__device__ real LRDBacNav_Gitodv = LRD_Gitodv_0;
+__device__ real LRDBacNav_Gcab = LRD_Gcab_0;
+__device__ real LRDBacNav_Gnab = LRD_Gnab_0;
+__device__ real LRDBacNav_ito = LRD_ito_0;
+__device__ real LRDBacNav_ikna = LRD_ikna_0;
+__device__ real LRDBacNav_ikatp = LRD_ikatp_0;
+__device__ real LRDBacNav_insna = LRD_insna_0;
+__device__ real LRDBacNav_insk = LRD_insk_0;
+__device__ real LRDBacNav_cleft = LRD_cleft_0;
+__device__ real BacNav_Gna = BacNav_Gna_0;
 
 
 void LRD_init(char** res) {
 	rword resources[] = {
-	{ "LRD_IV",	  1007 },
-	{ "LRD_Node",	  1100 },
-	{ "LRD_Nodetype", 1100 },
-	{ "LRD_Patch",	  1007 },
-	{ "LRD_Type",	  1100 },
-	{ "LRD_Vr",	      1008 },
-	{ "LRD_Vrest",	  1008 },
-	{ "LRD_Cm",       1009 },
-	{ "LRD_Gna",      1112 },
-	{ "LRD_Gtca",     1113 },
-	{ "LRD_Gkp",      1114 },
-	{ "LRD_Gitodv",   1115 },
-	{ "LRD_Gcab",     1116 },
-	{ "LRD_Gnab",     1117 },
-	{ "LRD_ito",      1118 },
-	{ "LRD_ikna",     1119 },
-	{ "LRD_ikatp",    1120 },
-	{ "LRD_insna",    1121 },
-	{ "LRD_insk",     1122 },
-	{ "LRD_cleft",    1123 },
+	{ "LRDBacNav_IV",	  1007 },
+	{ "LRDBacNav_Node",	  1100 },
+	{ "LRDBacNav_Nodetype", 1100 },
+	{ "LRDBacNav_Patch",	  1007 },
+	{ "LRDBacNav_Type",	  1100 },
+	{ "LRDBacNav_Vr",	      1008 },
+	{ "LRDBacNav_Vrest",	  1008 },
+	{ "LRDBacNav_Cm",       1009 },
+    { "LRDBacNav_Gna",      1112 },
+    { "LRDBacNav_Gtca",     1113 },
+    { "LRDBacNav_Gkp",      1114 },
+    { "LRDBacNav_Gitodv",   1115 },
+    { "LRDBacNav_Gcab",     1116 },
+    { "LRDBacNav_Gnab",     1117 },
+    { "LRDBacNav_ito",      1118 },
+    { "LRDBacNav_ikna",     1119 },
+    { "LRDBacNav_ikatp",    1120 },
+    { "LRDBacNav_insna",    1121 }, 
+    { "LRDBacNav_insk",     1122 },
+    { "LRDBacNav_cleft",    1123 },
+    { "LRDBacNav_BacNavFactor", 1124},
 	{ NULL, 0 }
 	};
 
@@ -63,79 +65,86 @@ void LRD_init(char** res) {
 	int cmd;
 	real temp;
 
+	temp = GetRealValue(res[i]);
+	cudaMemcpyToSymbol(LRD_cm, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+			
+
 	i = 0;
-	while (res[i] != NULL) {
-		cmd = FindCommand(resources, res[i]);
-		switch (cmd) {
-		case 1007:
-			/*iv = GetRealArray(res[i]);
-			p = (real*)(&LRD_RestPatch);
-			c = GetNumValues(res[i]);
-			if (c > LRD_PatchSize) {
-				c = LRD_PatchSize;
-			}
-			for (j = 0; j<c; j++) {
-				p[j] = iv[j];
-			}*/
-			break;
-		case 1008:
-			LRD_RestVoltage = GetRealValue(res[i]);
-			break;
-		case 1009:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_cm, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1100:
-			//LRD_NodeType = GetByteValue(res[i]);
-			break;
-		case 1112:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_Gna, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1113:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_Gtca, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1114:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_Gkp, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1115:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_Gitodv, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1116:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_Gcab, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1117:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_Gnab, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1118:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_ito, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1119:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_ikna, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1120:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_ikatp, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1121:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_insna, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1122:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_insk, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
-		case 1123:
-			temp = GetRealValue(res[i]);
-			cudaMemcpyToSymbol(LRD_cleft, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
-			break;
+	while( res[i] != NULL ) {
+		cmd = FindCommand( resources, res[i] );
+		switch( cmd ) {
+			case 1007:
+				/*iv = GetRealArray( res[i] );
+				p = (real*)(&LRDBacNav_RestPatch);
+				c  = GetNumValues( res[i] );
+				if( c > LRDBacNav_PatchSize ) {
+					c = LRDBacNav_PatchSize;
+				}
+				for(j=0;j<c;j++) {
+					p[j] = iv[j];
+				}*/
+				break;
+			case 1008:
+				LRDBacNav_RestVoltage = GetRealValue( res[i] );
+				break;
+            case 1009:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_cm, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+                break; 
+			case 1100:
+				//LRDBacNav_NodeType = GetByteValue( res[i] );
+				break;
+			case 1112:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_Gna, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1113:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_Gtca, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1114:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_Gkp, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1115:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_Gitodv, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1116:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_Gcab, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+			case 1117:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_Gnab, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+				break;
+            case 1118:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_ito, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+	            break;
+            case 1119:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_ikna, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+                break;
+            case 1120: 
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_ikatp, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+                break;
+            case 1121:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_insna, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+                break;
+            case 1122:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_insk, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+                break;
+            case 1123:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(LRDBacNav_cleft, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
+                break;
+		    case 1124:
+				temp = GetRealValue(res[i]);
+				cudaMemcpyToSymbol(BacNav_Gna, (void *)&temp, sizeof(real), 0, cudaMemcpyHostToDevice);
 		}
 		i++;
 	}
@@ -147,6 +156,8 @@ void LRD_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_d
 	cudaHostAlloc((void**)&(gate_h->m), memSize, 0);
 	cudaHostAlloc((void**)&(gate_h->h), memSize, 0);
 	cudaHostAlloc((void**)&(gate_h->j), memSize, 0);
+	cudaHostAlloc((void**)&(gate_h->mb), memSize, 0);
+	cudaHostAlloc((void**)&(gate_h->hb), memSize, 0);
 	cudaHostAlloc((void**)&(gate_h->d), memSize, 0);
 	cudaHostAlloc((void**)&(gate_h->f), memSize, 0);
 	cudaHostAlloc((void**)&(gate_h->b), memSize, 0);
@@ -179,6 +190,10 @@ void LRD_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_d
 	CudaSafeCall(cudaMallocPitch((void **)&gate_dev->h, pitch,
 		memSize, 1));
 	CudaSafeCall(cudaMallocPitch((void **)&gate_dev->j, pitch,
+		memSize, 1));
+	CudaSafeCall(cudaMallocPitch((void **)&gate_dev->mb, pitch,
+		memSize, 1));
+	CudaSafeCall(cudaMallocPitch((void **)&gate_dev->hb, pitch,
 		memSize, 1));
 	CudaSafeCall(cudaMallocPitch((void **)&gate_dev->d, pitch,
 		memSize, 1));
@@ -235,6 +250,10 @@ void LRD_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_d
 		memSize, 1));
 	CudaSafeCall(cudaMallocPitch((void **)&gate_devF->j, pitch,
 		memSize, 1));
+	CudaSafeCall(cudaMallocPitch((void **)&gate_devF->mb, pitch,
+		memSize, 1));
+	CudaSafeCall(cudaMallocPitch((void **)&gate_devF->hb, pitch,
+		memSize, 1));
 	CudaSafeCall(cudaMallocPitch((void **)&gate_devF->d, pitch,
 		memSize, 1));
 	CudaSafeCall(cudaMallocPitch((void **)&gate_devF->f, pitch,
@@ -289,6 +308,8 @@ void LRD_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_d
 		gate_h->m[idx] = 0.0008;
 		gate_h->h[idx] = 0.993771;
 		gate_h->j[idx] = 0.995727;
+		gate_h->mb[idx] = 0.000094;
+		gate_h->hb[idx] = 0.8231;
 		gate_h->d[idx] = 3.210618e-06;
 		gate_h->f[idx] = 0.999837;
 		gate_h->b[idx] = 0.000970231;
@@ -322,6 +343,10 @@ void LRD_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_d
 	CudaSafeCall(cudaMemcpy2D((void *)gate_dev->h, *pitch, (void *)gate_h->h,
 		memSize, memSize, 1, cudaMemcpyHostToDevice));
 	CudaSafeCall(cudaMemcpy2D((void *)gate_dev->j, *pitch, (void *)gate_h->j,
+		memSize, memSize, 1, cudaMemcpyHostToDevice));
+	CudaSafeCall(cudaMemcpy2D((void *)gate_dev->mb, *pitch, (void *)gate_h->mb,
+		memSize, memSize, 1, cudaMemcpyHostToDevice));
+	CudaSafeCall(cudaMemcpy2D((void *)gate_dev->hb, *pitch, (void *)gate_h->hb,
 		memSize, memSize, 1, cudaMemcpyHostToDevice));
 	CudaSafeCall(cudaMemcpy2D((void *)gate_dev->d, *pitch, (void *)gate_h->d,
 		memSize, memSize, 1, cudaMemcpyHostToDevice));
@@ -379,6 +404,10 @@ void LRD_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_d
 		memSize, memSize, 1, cudaMemcpyHostToDevice));
 	CudaSafeCall(cudaMemcpy2D((void *)gate_devF->j, *pitch, (void *)gate_h->j,
 		memSize, memSize, 1, cudaMemcpyHostToDevice));
+	CudaSafeCall(cudaMemcpy2D((void *)gate_devF->mb, *pitch, (void *)gate_h->mb,
+		memSize, memSize, 1, cudaMemcpyHostToDevice));
+	CudaSafeCall(cudaMemcpy2D((void *)gate_devF->hb, *pitch, (void *)gate_h->hb,
+		memSize, memSize, 1, cudaMemcpyHostToDevice));
 	CudaSafeCall(cudaMemcpy2D((void *)gate_devF->d, *pitch, (void *)gate_h->d,
 		memSize, memSize, 1, cudaMemcpyHostToDevice));
 	CudaSafeCall(cudaMemcpy2D((void *)gate_devF->f, *pitch, (void *)gate_h->f,
@@ -430,7 +459,8 @@ void LRD_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_d
 	qpH[i++] = gate_devF->m;
 	qpH[i++] = gate_devF->h;
 	qpH[i++] = gate_devF->j;
-	qpH[i++] = gate_devF->;
+	qpH[i++] = gate_devF->mb;
+	qpH[i++] = gate_devF->hb;
 	qpH[i++] = gate_devF->f;
 	qpH[i++] = gate_devF->b;
 	qpH[i++] = gate_devF->g;
@@ -452,7 +482,8 @@ void LRD_gateinit(int memSize, size_t* pitch, gateType* gate_h, gateType* gate_d
 	qpH[i++] = gate_dev->m;
 	qpH[i++] = gate_dev->h;
 	qpH[i++] = gate_dev->j;
-	qpH[i++] = gate_dev->;
+	qpH[i++] = gate_dev->mb;
+	qpH[i++] = gate_dev->hb;
 	qpH[i++] = gate_dev->f;
 	qpH[i++] = gate_dev->b;
 	qpH[i++] = gate_dev->g;
@@ -487,6 +518,10 @@ void LRD_sync(int memSize, size_t pitch, gateType* gate_h, gateType* gate_dev) {
 	CudaSafeCall(cudaMemcpy2D((void *)gate_h->h, *pitch, (void *)gate_dev->h,
 		memSize, memSize, 1, cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy2D((void *)gate_h->j, *pitch, (void *)gate_dev->j,
+		memSize, memSize, 1, cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy2D((void *)gate_h->mb, *pitch, (void *)gate_dev->mb,
+		memSize, memSize, 1, cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy2D((void *)gate_h->hb, *pitch, (void *)gate_dev->hb,
 		memSize, memSize, 1, cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy2D((void *)gate_h->d, *pitch, (void *)gate_dev->d,
 		memSize, memSize, 1, cudaMemcpyDeviceToHost));
@@ -542,6 +577,8 @@ void LRD_exit(int memSize, size_t pitch, gateType* gate_h, gateType* gate_dev, g
 	cudaFreeHost(gate_h->m);
 	cudaFreeHost(gate_h->h);
 	cudaFreeHost(gate_h->j);
+	cudaFreeHost(gate_h->mb);
+	cudaFreeHost(gate_h->hb);
 	cudaFreeHost(gate_h->d);
 	cudaFreeHost(gate_h->f);
 	cudaFreeHost(gate_h->b);
@@ -573,6 +610,8 @@ void LRD_exit(int memSize, size_t pitch, gateType* gate_h, gateType* gate_dev, g
 	cudaFree(gate_dev->m);
 	cudaFree(gate_dev->h);
 	cudaFree(gate_dev->j);
+	cudaFree(gate_dev->mb);
+	cudaFree(gate_dev->hb);
 	cudaFree(gate_dev->d);
 	cudaFree(gate_dev->f);
 	cudaFree(gate_dev->b);
@@ -604,6 +643,8 @@ void LRD_exit(int memSize, size_t pitch, gateType* gate_h, gateType* gate_dev, g
 	cudaFree(gate_devF->m);
 	cudaFree(gate_devF->h);
 	cudaFree(gate_devF->j);
+	cudaFree(gate_devF->mb);
+	cudaFree(gate_devF->hb);
 	cudaFree(gate_devF->d);
 	cudaFree(gate_devF->f);
 	cudaFree(gate_devF->b);
@@ -652,12 +693,12 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
 
 	/* declare variables */ 	                                 
     real vm,BOOL,tcicr,tjsrol,csqn;
-    real LRD_RTF;
-    real LRD_Gkr, LRD_Gks,LRD_Gki,LRD_Gkatp;
-    real LRD_Ena,LRD_Etca,LRD_Ekr,LRD_Eks,LRD_Eki,LRD_Ekp;
-    real LRD_Ekna,LRD_Ekatp,LRD_Ekdv,LRD_Ecan,LRD_Enan;
-    real m,h,j,am,bm,ah,bh,aj,bj,Ina;  
-    real d,f,dss,taud,fss,tauf,Ibarca,Ibarna,Ibark;
+    real LRDBacNav_RTF;
+    real LRDBacNav_Gkr, LRDBacNav_Gks,LRDBacNav_Gki,LRDBacNav_Gkatp;
+    real LRDBacNav_Ena,LRDBacNav_Etca,LRDBacNav_Ekr,LRDBacNav_Eks,LRDBacNav_Eki,LRDBacNav_Ekp;
+    real LRDBacNav_Ekna,LRDBacNav_Ekatp,LRDBacNav_Ekdv,LRDBacNav_Ecan,LRDBacNav_Enan;
+    real m,h,j,aproto,aproto2,am,bm,ah,bh,aj,bj,mb,hb,taumb, tauhb, minfb, hinfb, Ina;  
+    real d,f,dss,dss1,taud,fss,tauf,Ibarca,Ibarna,Ibark;
     real fca,Ilca,Ilcana,Ilcak,Ilcatot;
     real b,g,bss,taub,gss,taug,Itca;
     real xr,r,xrss,tauxr,Ikr;
@@ -694,7 +735,7 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
     /* cai update here */
     real cai,catotal,bmyo,cmyo,dmyo,gpig,dcai;
     real vcell,ageo,acap,vmyo,vnsr,vjsr,vcleft;
-    LRD_RTF = LRD_R*LRD_temp/LRD_frdy;
+    LRDBacNav_RTF = LRDBacNav_R*LRDBacNav_temp/LRDBacNav_frdy;
 
 
 	vm        = g_dev.vm[i2d];
@@ -702,6 +743,8 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
 	m 		  = g_dev.m[i2d];
 	h 		  = g_dev.h[i2d];
 	j 		  = g_dev.j[i2d];
+	mb 		  = g_dev.mb[i2d];
+	hb 		  = g_dev.hb[i2d];
 	d 		  = g_dev.d[i2d];
 	f 		  = g_dev.f[i2d];
 	b 		  = g_dev.b[i2d];
@@ -734,49 +777,49 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
 	real fv = g_devF.vm[i2d];
 
 	/* Declare varying G's and E's */
-    LRD_Gkr   = 0.02614*sqrt(ko/5.4); 
-    LRD_Gks   = 0.433*(1+0.6/(1+pow((0.000038/cai),1.4)));
-    LRD_Gki   = 0.75*(sqrt(ko/5.4));
-    LRD_Gkatp = 0.000195/nicholsarea;
-    
-    LRD_Ena   = (LRD_RTF)*log(nao/nai);
-    LRD_Etca  = 0.5*(LRD_RTF)*log(cao/cai);  
-    LRD_Ekr   = (LRD_RTF)*log(ko/ki);
-    LRD_Eks   = (LRD_RTF)*log((ko+prnak*nao)/(ki+prnak*nai));
-    LRD_Eki   = (LRD_RTF)*log(ko/ki);
-    LRD_Ekp   = LRD_Eki;
-    LRD_Ekna  = LRD_Ekr; 
-    LRD_Ekatp = LRD_Ekr; 
-    LRD_Ekdv  = LRD_Ekr;
-    LRD_Ecan  = LRD_Etca;
-    LRD_Enan  = LRD_Ena;
+	LRDBacNav_Gkr   = 0.02614*sqrt(ko/5.4); 
+	LRDBacNav_Gks   = 0.433*(1+0.6/(1+pow((0.000038/cai),1.4)));
+	LRDBacNav_Gki   = 0.75*(sqrt(ko/5.4));
+	LRDBacNav_Gkatp = 0.000195/nicholsarea;
+
+	LRDBacNav_Ena   = (LRDBacNav_RTF)*log(nao/nai);
+	LRDBacNav_Etca  = 0.5*(LRDBacNav_RTF)*log(cao/cai);  
+	LRDBacNav_Ekr   = (LRDBacNav_RTF)*log(ko/ki);
+	LRDBacNav_Eks   = (LRDBacNav_RTF)*log((ko+prnak*nao)/(ki+prnak*nai));
+	LRDBacNav_Eki   = (LRDBacNav_RTF)*log(ko/ki);
+	LRDBacNav_Ekp   = LRDBacNav_Eki;
+	LRDBacNav_Ekna  = LRDBacNav_Ekr; 
+	LRDBacNav_Ekatp = LRDBacNav_Ekr; 
+	LRDBacNav_Ekdv  = LRDBacNav_Ekr;
+	LRDBacNav_Ecan  = LRDBacNav_Etca;
+	LRDBacNav_Enan  = LRDBacNav_Ena;
 
 	/* Na current [15] */
-    am = 0.32*(vm+47.13)/(1-exp(-0.1*(vm+47.13)));
-    bm = 0.08*exp(-vm/11);
-    if (vm < -40) {
-		ah = 0.135*exp((80+vm)/-6.8);
-		bh = 3.56*exp(0.079*vm)+310000*exp(0.35*vm);
-		aj = (-127140*exp(0.2444*vm)-0.00003474*exp(-0.04391*vm))*((vm+37.78)/(1+exp(0.311*(vm+79.23))));
-		bj = (0.1212*exp(-0.01052*vm))/(1+exp(-0.1378*(vm+40.14)));
-     } else {
-		ah = 0;
-		bh = 1/(0.13*(1+exp((vm+10.66)/-11.1)));
-		aj = 0;
-		bj = (0.3*exp(-0.0000002535*vm))/(1+exp(-0.1*(vm+32)));
-    }        
-
-      Ina=LRD_Gna*(m*m*m*h*j)*(vm-LRD_Ena);
+	aproto  = 1-1.0/(1+exp(-(vm+40)/0.024));
+	am = 0.32*(vm+47.13)/(1-exp(-0.1*(vm+47.13)));
+	bm = 0.08*exp(-vm/11);
+	ah = aproto*0.135*exp((80+vm)/-6.8);
+	bh = (1-aproto)/(0.13*(1+exp((vm+10.66)/(-11.1)))) + aproto*(3.56*exp(0.079*vm)+3.1*pow(10,5)*exp(0.35*vm));
+	aj = aproto*(-127140*exp(0.2444*vm)-0.00003474*exp(-0.04391*vm))*((vm+37.78)/(1+exp(0.311*(vm+79.23))));
+	bj = (1-aproto)*(0.3*exp(-2.535*pow(10,-7)*vm)/(1+exp(-0.1*(vm+32))))+aproto*(0.1212*exp(-0.01052*vm))/(1+exp(-0.1378*(vm+40.14)));        
+	/* BacNav component */
+	minfb = (1.0/(1.0+exp((vm+28.34)/(-5.33))));
+	hinfb = (1.0-1.0/(1.0+exp((-77.21-vm)/8.32)));
+	taumb = (86.37/(exp((vm+82.74)/17.64) + exp(-(vm+ 6.008)/3.337)) + .4844);
+	tauhb = (96.17-(96.17-10.45)/(1.0+exp((-23.26-vm)/2.529)));
+	Ina=(LRDBacNav_Gna*(m*m*m*h*j)+BacNav_Gna*(mb*mb*mb*hb))*(vm-LRDBacNav_Ena);
 
 	/* L-type Calcium current [14,15] */
 	dss  = 1/(1+exp(-(vm+10)/6.24));
+	dss1 = 1/(1+exp(-(vm+60)/0.024));
 	taud = dss*(1-exp(-(vm+10)/6.24))/(0.035*(vm+10));
+	dss = dss * dss1;
 	fss  = (1/(1+exp((vm+32)/8)))+(0.6/(1+exp((50-vm)/20)));
 	tauf = 1/(0.0197*exp(-0.0337*0.0337*(vm+10)*(vm+10))+0.02);
 
-	Ibarca = pca*zca*zca*((vm*LRD_frdy)/(LRD_RTF))*((gacai*cai*exp((zca*vm)/(LRD_RTF))-gacao*cao)/(exp((zca*vm)/(LRD_RTF))-1));
-	Ibarna = pna*zna*zna*((vm*LRD_frdy)/(LRD_RTF))*((ganai*nai*exp((zna*vm)/(LRD_RTF))-ganao*nao)/(exp((zna*vm)/(LRD_RTF))-1));
-	Ibark  = pk*zk*zk*((vm*LRD_frdy)/(LRD_RTF))*((gaki*ki*exp((zk*vm)/(LRD_RTF))-gako*ko)/(exp((zk*vm)/(LRD_RTF))-1));
+	Ibarca = pca*zca*zca*((vm*LRDBacNav_frdy)/(LRDBacNav_RTF))*((gacai*cai*exp((zca*vm)/(LRDBacNav_RTF))-gacao*cao)/(exp((zca*vm)/(LRDBacNav_RTF))-1));
+	Ibarna = pna*zna*zna*((vm*LRDBacNav_frdy)/(LRDBacNav_RTF))*((ganai*nai*exp((zna*vm)/(LRDBacNav_RTF))-ganao*nao)/(exp((zna*vm)/(LRDBacNav_RTF))-1));
+	Ibark  = pk*zk*zk*((vm*LRDBacNav_frdy)/(LRDBacNav_RTF))*((gaki*ki*exp((zk*vm)/(LRDBacNav_RTF))-gako*ko)/(exp((zk*vm)/(LRDBacNav_RTF))-1));
 
 	fca = 1/(1+cai/kmca);
 
@@ -789,12 +832,9 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
 	bss  = 1/(1+exp(-(vm+14)/10.8));
 	taub = 3.7+6.1/(1+exp((vm+25)/4.5));
 	gss  = 1/(1+exp((vm+60)/5.6));
-	if (vm<=0) {
-		taug = -0.875*vm+12;
-	} else {
-		taug = 12;
-	}
-	Itca = LRD_Gtca*b*b*g*(vm-LRD_Etca);
+	aproto2 = 1-1/(1+exp(-vm/0.0024));
+	taug = aproto2*(-0.875*vm+12.0)+12.0*(1-aproto2);
+	Itca = LRDBacNav_Gtca*b*b*g*(vm-LRDBacNav_Etca);
 
 	/* K current - Rapid [13] */
 	xrss  = 1/(1+exp(-(vm+21.5)/7.5));
@@ -802,7 +842,7 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
 
 	r = 1/(1+exp((vm+9)/22.4));
 
-	Ikr = LRD_Gkr*xr*r*(vm-LRD_Ekr);
+	Ikr = LRDBacNav_Gkr*xr*r*(vm-LRDBacNav_Ekr);
 
 	/* K current - Slow [10,13] */
 	xs1ss  = 1/(1+exp(-(vm-1.5)/16.7));
@@ -810,27 +850,27 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
 	tauxs1 = 1/(0.0000719*(vm+30)/(1-exp(-0.148*(vm+30)))+0.000131*(vm+30)/(exp(0.0687*(vm+30))-1));
 	tauxs2 = 4*tauxs1;
 
-	Iks = LRD_Gks*xs1*xs2*(vm-LRD_Eks);
+	Iks = LRDBacNav_Gks*xs1*xs2*(vm-LRDBacNav_Eks);
 
 	/* K current -  Time independent [15] */
-	aki = 1.02/(1+exp(0.2385*(vm-LRD_Eki-59.215)));
-	bki = (0.49124*exp(0.08032*(vm-LRD_Eki+5.476))+exp(0.06175*(vm-LRD_Eki-594.31)))/(1+exp(-0.5143*(vm-LRD_Eki+4.753)));	
+	aki = 1.02/(1+exp(0.2385*(vm-LRDBacNav_Eki-59.215)));
+	bki = (0.49124*exp(0.08032*(vm-LRDBacNav_Eki+5.476))+exp(0.06175*(vm-LRDBacNav_Eki-594.31)))/(1+exp(-0.5143*(vm-LRDBacNav_Eki+4.753)));	
 
 	kin = aki/(aki+bki);
 
-	Ikti = LRD_Gki*kin*(vm-LRD_Eki);
+	Ikti = LRDBacNav_Gki*kin*(vm-LRDBacNav_Eki);
 
 	/* K current - Plateau [15] */
 	kp  = 1/(1+exp((7.488-vm)/5.98));	
 
-	Ikp = LRD_Gkp*kp*(vm-LRD_Ekp);
-      
+	Ikp = LRDBacNav_Gkp*kp*(vm-LRDBacNav_Ekp);
+
 	/* Na-Ca exchanger [6,14,15] */
-	Inaca = c1*exp((gammas-1)*vm/(LRD_RTF))*((exp(vm/(LRD_RTF))*nai*nai*nai*cao-nao*nao*nao*cai)/(1+c2*exp((gammas-1)*vm/(LRD_RTF))*(exp(vm/(LRD_RTF))*nai*nai*nai*cao+nao*nao*nao*cai)));
+	Inaca = c1*exp((gammas-1)*vm/(LRDBacNav_RTF))*((exp(vm/(LRDBacNav_RTF))*nai*nai*nai*cao-nao*nao*nao*cai)/(1+c2*exp((gammas-1)*vm/(LRDBacNav_RTF))*(exp(vm/(LRDBacNav_RTF))*nai*nai*nai*cao+nao*nao*nao*cai)));
 
 	/* Na-K pump [15] */
 	sigma = (exp(nao/67.3)-1)/7;
-	fnak  = 1/(1+0.1245*exp((-0.1*vm)/(LRD_RTF))+0.0365*sigma*exp((-vm)/(LRD_RTF)));
+	fnak  = 1/(1+0.1245*exp((-0.1*vm)/(LRDBacNav_RTF))+0.0365*sigma*exp((-vm)/(LRDBacNav_RTF)));
 
 	Inak = Ibarnak*fnak*(1/(1+kmnai*kmnai/(nai*nai)))*(ko/(ko+kmko));
 
@@ -838,29 +878,29 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
 	Ipca = (Ibarpca*cai)/(kmpca+cai);
 
 	/* Ca background current [15] */
-	Icab = LRD_Gcab*(vm-LRD_Ecan);
+	Icab = LRDBacNav_Gcab*(vm-LRDBacNav_Ecan);
 
 	/* Na background current [15] */
-	Inab = LRD_Gnab*(vm-LRD_Enan);          
-      
+	Inab = LRDBacNav_Gnab*(vm-LRDBacNav_Enan);          
+
 	/* Na activated K current [6] */
 	pona = 0.85/(1+pow((kdkna/nai),2.8));
 	pov  = 0.8-(0.65/(1+exp((vm+125)/15)));
 
-	Ikna = LRD_ikna*LRD_Gkna*pona*pov*(vm-LRD_Ekna);
+	Ikna = LRDBacNav_ikna*LRDBacNav_Gkna*pona*pov*(vm-LRDBacNav_Ekna);
 
 	/* ATP sensitive K current [11] */
 	patp = 1/(1+(pow((atpi/katp),hatp)));
-	gkbaratp = LRD_Gkatp*patp*(pow((ko/4),natp));
+	gkbaratp = LRDBacNav_Gkatp*patp*(pow((ko/4),natp));
 
-	Ikatp = LRD_ikatp*gkbaratp*(vm-LRD_Ekatp);     
+	Ikatp = LRDBacNav_ikatp*gkbaratp*(vm-LRDBacNav_Ekatp);     
 
 	/* Non-specific Ca-activated current [14,15] */
-	Ibarnsna = pnsca*zna*zna*((vm*LRD_frdy)/(LRD_RTF))*((ganai*nai*exp((zna*vm)/(LRD_RTF))-ganao*nao)/(exp((zna*vm)/(LRD_RTF))-1));
-	Ibarnsk  = pnsca*zk*zk*((vm*LRD_frdy)/(LRD_RTF))*((gaki*ki*exp((zk*vm)/(LRD_RTF))-gako*ko)/(exp((zk*vm)/(LRD_RTF))-1));
+	Ibarnsna = pnsca*zna*zna*((vm*LRDBacNav_frdy)/(LRDBacNav_RTF))*((ganai*nai*exp((zna*vm)/(LRDBacNav_RTF))-ganao*nao)/(exp((zna*vm)/(LRDBacNav_RTF))-1));
+	Ibarnsk  = pnsca*zk*zk*((vm*LRDBacNav_frdy)/(LRDBacNav_RTF))*((gaki*ki*exp((zk*vm)/(LRDBacNav_RTF))-gako*ko)/(exp((zk*vm)/(LRDBacNav_RTF))-1));
 
-	Insna = LRD_insna*Ibarnsna/(1+kmnsca*kmnsca*kmnsca/(cai*cai*cai)); 
-	Insk = LRD_insk*Ibarnsk/(1+kmnsca*kmnsca*kmnsca/(cai*cai*cai));   
+	Insna = LRDBacNav_insna*Ibarnsna/(1+kmnsca*kmnsca*kmnsca/(cai*cai*cai)); 
+	Insk = LRDBacNav_insk*Ibarnsk/(1+kmnsca*kmnsca*kmnsca/(cai*cai*cai));   
 
 	/* Transient outward current */
 	rvdv = exp(vm/100);
@@ -875,15 +915,15 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
 	tauydv = 1/(aydv+bydv);
 	ydvss = aydv/(aydv+bydv);
 
-	Ito = LRD_ito*LRD_Gitodv*zdv*zdv*zdv*ydv*rvdv*(vm-LRD_Ekdv);
+	Ito = LRDBacNav_ito*LRDBacNav_Gitodv*zdv*zdv*zdv*ydv*rvdv*(vm-LRDBacNav_Ekdv);
 
 	/* Summing currents (inactive currents are set to zero with activation variables) */
 	naiont = Ina+Inab+Ilcana+3*Inak+3*Inaca+Insna;
 	kiont  = Ikr+Iks+Ikti+Ikp+Ilcak+-2*Inak+Insk+Ito+Ikna+Ikatp;  
 	caiont = Ilca+Icab+Ipca-2*Inaca+Itca;
 
-	Itotal = LRD_cm*(naiont+kiont+caiont);     /* uA/cm2 */
- 
+	Itotal = LRDBacNav_cm*(naiont+kiont+caiont);     /* uA/cm2 */
+
 	if (((t-tcicr)>80) && (vm<-30)) {
 		BOOL = 0;  
 		g_dev.BOOL[i2d] = BOOL;                                                                  
@@ -893,15 +933,14 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
 	fv += -Itotal;
 	g_devF.vm[i2d] = fv;
 
-
 	/* change in cleft concentration */
-	dnao = LRD_cleft*((nabm-nao)/taudiff+naiont*acap*LRD_cm/(vcleft*LRD_frdy));
-	dko = LRD_cleft*((kbm-ko)/taudiff+kiont*acap*LRD_cm/(vcleft*LRD_frdy));
-	dcao = LRD_cleft*((cabm-cao)/taudiff+caiont*acap*LRD_cm/(vcleft*LRD_frdy*2));
+	dnao = LRDBacNav_cleft*((nabm-nao)/taudiff+naiont*acap*LRDBacNav_cm/(vcleft*LRDBacNav_frdy));
+	dko = LRDBacNav_cleft*((kbm-ko)/taudiff+kiont*acap*LRDBacNav_cm/(vcleft*LRDBacNav_frdy));
+	dcao = LRDBacNav_cleft*((cabm-cao)/taudiff+caiont*acap*LRDBacNav_cm/(vcleft*LRDBacNav_frdy*2));
 
 	/* change in nai and ki concentration */
-	dnai = -LRD_cm*(naiont*acap)/(vmyo*zna*LRD_frdy);     /* dnai/dt */
-	dki = -LRD_cm*(kiont*acap)/(vmyo*zk*LRD_frdy);        /* dki/dt */
+	dnai = -LRDBacNav_cm*(naiont*acap)/(vmyo*zna*LRDBacNav_frdy);     /* dnai/dt */
+	dki = -LRDBacNav_cm*(kiont*acap)/(vmyo*zk*LRDBacNav_frdy);        /* dki/dt */
 
 	/* change in itr [14] */ 
 	itr = (nsr-jsr)/tautr;                           
@@ -912,6 +951,7 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
 	iup   = iupbar*cai/(cai+kmup);
 
 	dnsr = (iup-ileak-itr*vjsr/vnsr);          /* dnsr/dt */
+
 
 	/* Calcium-induced-calcium-release (CICR) criteia [6] */
 	if ((vm>-35) && (((caiont-caiontold)/dt)<dcaiont) && (BOOL==0)){
@@ -945,7 +985,7 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
 	cmdn = cmdnbar*(cai/(cai+kmcmdn));
      
 	/* change in cai concentration [13] */
-	dcai = -dt*(((LRD_cm*caiont*acap)/(vmyo*zca*LRD_frdy))+((iup-ileak)*vnsr/vmyo)-(irelcicr*vjsr/vmyo)-(ireljsrol*vjsr/vmyo));
+	dcai = -dt*(((LRDBacNav_cm*caiont*acap)/(vmyo*zca*LRDBacNav_frdy))+((iup-ileak)*vnsr/vmyo)-(irelcicr*vjsr/vmyo)-(ireljsrol*vjsr/vmyo));
 
 	catotal = trpn+cmdn+dcai+cai;
 
@@ -966,6 +1006,8 @@ void __device__ GetFDev_LRD(int i2d, int pitch, real beta, real Cm, real t, real
     g_devF.m[i2d]    = am*(1.0-m) - bm*m;
     g_devF.h[i2d]    = ah*(1.0-h) - bh*h;
     g_devF.j[i2d]    = aj*(1.0-j) - bj*j;
+    g_devF.mb[i2d]   = (minfb - mb)/taumb;
+	g_devF.hb[i2d]   = (hinfb - hb)/tauhb;
     g_devF.d[i2d]    = (dss/taud)*(1-d)-(1-dss)*(d/taud);
     g_devF.f[i2d]    = (fss/tauf)*(1-f)-(1-fss)*(f/tauf);
     g_devF.b[i2d]    = (bss/taub)*(1-b)-(1-bss)*(b/taub);

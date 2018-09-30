@@ -139,10 +139,9 @@ int main(int argc, char **argv) {
 	printf("Time step: %f ms\n", dt);
 
 	// Array allocation and init
-
-	//CRN_gateinit(memSize, &pitch, &gate_h, &gate_dev, &gate_devF);
-	fourV_gateinit(memSize, &pitch, &gate_h, &gate_dev, &gate_devF);
-
+	CRN_init(inpBuffer);
+	CRN_gateinit(memSize, &pitch, &gate_h, &gate_dev, &gate_devF);
+	
 	setupStim(&stim, nodes, start, dur, strength, numStim);
 	puts("\nStarting simulation\n");
 
@@ -159,9 +158,8 @@ int main(int argc, char **argv) {
 
 		if (t >= Tnext) {
 
-			//CRN_sync(memSize, pitch, &gate_h, &gate_dev);
-			fourV_sync(memSize, pitch, &gate_h, &gate_dev);
-
+			CRN_sync(memSize, pitch, &gate_h, &gate_dev);
+			
 			outputDump(totpoints, &gate_h, fp1);
 			Tnext += Tspacing;
 		}
@@ -175,8 +173,7 @@ int main(int argc, char **argv) {
 	fclose(fp1);
 	puts("\nSimulation ended\n");
 
-	//CRN_exit(memSize, pitch, &gate_h, &gate_dev, &gate_devF, &MatrixINT, &cudaMatrixINT);
-	fourV_exit(memSize, pitch, &gate_h, &gate_dev, &gate_devF, &MatrixINT, &cudaMatrixINT);
-
+	CRN_exit(memSize, pitch, &gate_h, &gate_dev, &gate_devF, &MatrixINT, &cudaMatrixINT);
+	
 	return 0;
 }

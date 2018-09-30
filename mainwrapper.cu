@@ -15,8 +15,7 @@
 
 #include "inputs.cuh"
 
-//#include "./CRN/CRNMethods.cu"
-#include "./fourV/fourVMethods.cu"
+#include "./CRN/CRNMethods.cu"
 
 #include "./Stim/stimSimple.cu"
 
@@ -42,8 +41,7 @@ void __global__ TstepEM(int pitch, real beta, real Cm, real t, real dt, int totp
 		g_devF.vm[i2d] = 0;
 		sprDiff(g_devF.vm, &cudaMatrixINT, i2d, totpoints, g_dev.vm, beta);
 
-		//GetFDev_CRN(i2d, pitch, beta, Cm, t, dt, totpoints, rx, g_dev, g_devF);
-		GetFDev_fourV(i2d, pitch, beta, Cm, t, dt, totpoints, rx, g_dev, g_devF);
+		GetFDev_CRN(i2d, pitch, beta, Cm, t, dt, totpoints, rx, g_dev, g_devF);
 
 	}
 }
