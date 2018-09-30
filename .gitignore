@@ -12,7 +12,4 @@ x64/
 *.deps
 *.cache
 *.obj
-*.sln
-*.vcxproj.*
-*.vcxproj
 *.suo
